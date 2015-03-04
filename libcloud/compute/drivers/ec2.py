@@ -41,7 +41,8 @@ from libcloud.compute.providers import Provider
 from libcloud.compute.base import Node, NodeDriver, NodeLocation, NodeSize
 from libcloud.compute.base import NodeImage, StorageVolume, VolumeSnapshot
 from libcloud.compute.base import KeyPair
-from libcloud.compute.types import NodeState, KeyPairDoesNotExistError
+from libcloud.compute.types import NodeState, KeyPairDoesNotExistError, \
+    StorageVolumeState
 
 __all__ = [
     'API_VERSION',
@@ -1990,6 +1991,15 @@ class BaseEC2NodeDriver(NodeDriver):
         'running': NodeState.RUNNING,
         'shutting-down': NodeState.UNKNOWN,
         'terminated': NodeState.TERMINATED
+    }
+
+    VOLUME_STATE_MAP = {
+        'available': StorageVolumeState.AVAILABLE,
+        'in-use': StorageVolumeState.INUSE,
+        'error': StorageVolumeState.ERROR,
+        'creating': StorageVolumeState.CREATING,
+        'deleting': StorageVolumeState.DELETING,
+        'error_deleting': StorageVolumeState.ERROR
     }
 
     def list_nodes(self, ex_node_ids=None, ex_filters=None):
@@ -4683,6 +4693,14 @@ class BaseEC2NodeDriver(NodeDriver):
         volId = findtext(element=element, xpath='volumeId',
                          namespace=NAMESPACE)
         size = findtext(element=element, xpath='size', namespace=NAMESPACE)
+        raw_state = findtext(element=element, xpath='status',
+                             namespace=NAMESPACE)
+
+        try:
+            state = self.VOLUME_STATE_MAP[raw_state]
+        except KeyError:
+            raise ValueError("Unknown StorageVolume state %s encountered" %
+                             raw_state)
 
         # Get our tags
         tags = self._get_resource_tags(element)
@@ -4701,6 +4719,7 @@ class BaseEC2NodeDriver(NodeDriver):
                              name=name,
                              size=int(size),
                              driver=self,
+                             state=state,
                              extra=extra)
 
     def _to_snapshots(self, response):

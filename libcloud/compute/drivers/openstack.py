@@ -44,7 +44,7 @@ from libcloud.compute.base import NodeSize, NodeImage
 from libcloud.compute.base import (NodeDriver, Node, NodeLocation,
                                    StorageVolume, VolumeSnapshot)
 from libcloud.compute.base import KeyPair
-from libcloud.compute.types import NodeState, Provider
+from libcloud.compute.types import NodeState, StorageVolumeState, Provider
 from libcloud.pricing import get_size_price
 from libcloud.utils.xml import findall
 
@@ -101,6 +101,15 @@ class OpenStackNodeDriver(NodeDriver, OpenStackDriverMixin):
         'DELETE_IP': NodeState.PENDING,
         'ERROR': NodeState.ERROR,
         'UNKNOWN': NodeState.UNKNOWN
+    }
+
+    VOLUME_STATE_MAP = {
+        'available': StorageVolumeState.AVAILABLE,
+        'in-use': StorageVolumeState.INUSE,
+        'error': StorageVolumeState.ERROR,
+        'creating': StorageVolumeState.CREATING,
+        'deleting': StorageVolumeState.DELETING,
+        'error_deleting': StorageVolumeState.ERROR
     }
 
     def __new__(cls, key, secret=None, secure=True, host=None, port=None,
@@ -2054,14 +2063,23 @@ class OpenStack_1_1_NodeDriver(OpenStackNodeDriver):
     def _to_volume(self, api_node):
         if 'volume' in api_node:
             api_node = api_node['volume']
+
+        try:
+            state = self.VOLUME_STATE_MAP[api_node['status']]
+        except KeyError:
+            raise ValueError("Unknown StorageVolume state %s encountered" %
+                             api_node['status'])
+
         return StorageVolume(
             id=api_node['id'],
             name=api_node['displayName'],
             size=api_node['size'],
+            state=state,
             driver=self,
             extra={
                 'description': api_node['displayDescription'],
                 'attachments': [att for att in api_node['attachments'] if att],
+                # TODO: remove in 1.18.0
                 'state': api_node.get('status', None),
                 'location': api_node.get('availabilityZone', None),
                 'volume_type': api_node.get('volumeType', None),

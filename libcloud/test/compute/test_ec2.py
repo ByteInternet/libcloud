@@ -38,7 +38,7 @@ from libcloud.compute.drivers.ec2 import ExEC2AvailabilityZone
 from libcloud.compute.drivers.ec2 import EC2NetworkSubnet
 from libcloud.compute.base import Node, NodeImage, NodeSize, NodeLocation
 from libcloud.compute.base import StorageVolume, VolumeSnapshot
-from libcloud.compute.types import KeyPairDoesNotExistError
+from libcloud.compute.types import KeyPairDoesNotExistError, StorageVolumeState
 
 from libcloud.test import MockHttpTestCase, LibcloudTestCase
 from libcloud.test.compute import TestCaseMixin
@@ -793,6 +793,7 @@ class EC2Tests(LibcloudTestCase, TestCaseMixin):
 
     def test_destroy_volume(self):
         vol = StorageVolume(id='vol-4282672b', name='test',
+                            state=StorageVolumeState.AVAILABLE,
                             size=10, driver=self.driver)
 
         retValue = self.driver.destroy_volume(vol)
@@ -800,7 +801,8 @@ class EC2Tests(LibcloudTestCase, TestCaseMixin):
 
     def test_attach(self):
         vol = StorageVolume(id='vol-4282672b', name='test',
-                            size=10, driver=self.driver)
+                            size=10, state=StorageVolumeState.AVAILABLE,
+                            driver=self.driver)
 
         node = Node('i-4382922a', None, None, None, None, self.driver)
         retValue = self.driver.attach_volume(node, vol, '/dev/sdh')
@@ -809,6 +811,7 @@ class EC2Tests(LibcloudTestCase, TestCaseMixin):
 
     def test_detach(self):
         vol = StorageVolume(id='vol-4282672b', name='test',
+                            state=StorageVolumeState.INUSE,
                             size=10, driver=self.driver)
 
         retValue = self.driver.detach_volume(vol)
@@ -816,6 +819,7 @@ class EC2Tests(LibcloudTestCase, TestCaseMixin):
 
     def test_create_volume_snapshot(self):
         vol = StorageVolume(id='vol-4282672b', name='test',
+                            state=StorageVolumeState.AVAILABLE,
                             size=10, driver=self.driver)
         snap = self.driver.create_volume_snapshot(
             vol, 'Test snapshot')
