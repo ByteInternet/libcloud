@@ -1402,7 +1402,7 @@ class OpenStack_1_1_Tests(unittest.TestCase, TestCaseMixin):
         self.assertEqual(snapshots[0].extra['name'], 'snap-001')
 
         # invalid date is parsed as None
-        self.assertIsNone(snapshots[2].created)
+        assert snapshots[2].created is None
 
     def test_list_volume_snapshots(self):
         volume = self.driver.list_volumes()[0]
