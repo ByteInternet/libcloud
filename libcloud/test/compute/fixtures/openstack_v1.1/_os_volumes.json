@@ -32,7 +32,7 @@
             "metadata": {},
             "size": 50,
             "snapshotId": null,
-            "status": "available",
+            "status": "in-use",
             "volumeType": "None"
         }
     ]
