@@ -486,7 +486,8 @@ class GCERegion(UuidMixin):
 
 
 class GCESnapshot(VolumeSnapshot):
-    def __init__(self, id, name, size, status, driver, extra=None, created=None):
+    def __init__(self, id, name, size, status, driver, extra=None,
+                 created=None):
         self.name = name
         self.status = status
         super(GCESnapshot, self).__init__(id, driver, size, extra, created)

@@ -553,12 +553,6 @@ class VolumeSnapshot(object):
     """
     A base VolumeSnapshot class to derive from.
     """
-    id = None
-    driver = None
-    size = None
-    extra = None
-    created = None
-
     def __init__(self, id, driver, size=None, extra=None, created=None):
         """
         VolumeSnapshot constructor.
