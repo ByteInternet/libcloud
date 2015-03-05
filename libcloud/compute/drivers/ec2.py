@@ -1993,12 +1993,14 @@ class BaseEC2NodeDriver(NodeDriver):
         'terminated': NodeState.TERMINATED
     }
 
+    # http://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_Volume.html
     VOLUME_STATE_MAP = {
         'available': StorageVolumeState.AVAILABLE,
         'in-use': StorageVolumeState.INUSE,
         'error': StorageVolumeState.ERROR,
         'creating': StorageVolumeState.CREATING,
         'deleting': StorageVolumeState.DELETING,
+        'deleted': StorageVolumeState.DELETED,
         'error_deleting': StorageVolumeState.ERROR
     }
 

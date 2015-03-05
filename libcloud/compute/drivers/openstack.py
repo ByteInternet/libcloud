@@ -103,13 +103,19 @@ class OpenStackNodeDriver(NodeDriver, OpenStackDriverMixin):
         'UNKNOWN': NodeState.UNKNOWN
     }
 
+    # http://developer.openstack.org/api-ref-blockstorage-v2.html#volumes-v2
     VOLUME_STATE_MAP = {
-        'available': StorageVolumeState.AVAILABLE,
-        'in-use': StorageVolumeState.INUSE,
-        'error': StorageVolumeState.ERROR,
         'creating': StorageVolumeState.CREATING,
+        'available': StorageVolumeState.AVAILABLE,
+        'attaching': StorageVolumeState.ATTACHING,
+        'in-use': StorageVolumeState.INUSE,
         'deleting': StorageVolumeState.DELETING,
-        'error_deleting': StorageVolumeState.ERROR
+        'error': StorageVolumeState.ERROR,
+        'error_deleting': StorageVolumeState.ERROR,
+        'backing-up': StorageVolumeState.BACKUP,
+        'restoring-backup': StorageVolumeState.BACKUP,
+        'error_restoring': StorageVolumeState.ERROR,
+        'error_extending': StorageVolumeState.ERROR,
     }
 
     def __new__(cls, key, secret=None, secure=True, host=None, port=None,

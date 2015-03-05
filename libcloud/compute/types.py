@@ -228,6 +228,9 @@ class StorageVolumeState(object):
     INUSE = 2
     CREATING = 3
     DELETING = 4
+    DELETED = 5
+    BACKUP = 6
+    ATTACHING = 7
 
 
 class Architecture(object):
