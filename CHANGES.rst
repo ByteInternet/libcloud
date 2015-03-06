@@ -20,6 +20,11 @@ Compute
   VolumeSnapshot.extra containing the original string is maintained, so
   this is a backwards-compatible change.
   (GITHUB-473)
+
+- Deprecated ex_create_snapshot and ex_delete_snapshot in favor of
+  create_storage_volume and destroy_storage_volume. Updated base driver
+  method create_storage_volume argument name to be optional.
+  (GITHUB-478)
   [Allard Hoeve]
 
 - Add support for creating volumes based on snapshots to EC2 and OS drivers.
