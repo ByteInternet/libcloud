@@ -15,6 +15,12 @@ General
 Compute
 ~~~~~~~
 
+- Deprecated ex_create_snapshot and ex_delete_snapshot in favor of
+  create_storage_volume and destroy_storage_volume. Updated base driver
+  method create_storage_volume argument name to be optional.
+  (GITHUB-478)
+  [Allard Hoeve]
+
 - Add support for creating volumes based on snapshots to EC2 and OS drivers.
   Also modify signature of base NodeDriver.create_volume to reflect the fact
   that all drivers expect a StorageSnapshot object as the snapshot argument.
