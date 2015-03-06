@@ -1594,6 +1594,10 @@ RESOURCE_EXTRA_ATTRIBUTES_MAP = {
             'xpath': 'attachmentSet/item/device',
             'transform_func': str
         },
+        'snapshot_id': {
+            'xpath': 'snapshotId',
+            'transform_func': lambda v: str(v) or None
+        },
         'iops': {
             'xpath': 'iops',
             'transform_func': int

@@ -2120,6 +2120,7 @@ class OpenStack_1_1_NodeDriver(OpenStackNodeDriver):
                 'attachments': [att for att in api_node['attachments'] if att],
                 # TODO: remove in 1.18.0
                 'state': api_node.get('status', None),
+                'snapshot_id': api_node.get('snapshotId', None),
                 'location': api_node.get('availabilityZone', None),
                 'volume_type': api_node.get('volumeType', None),
                 'metadata': api_node.get('metadata', None),

@@ -15,6 +15,11 @@ General
 Compute
 ~~~~~~~
 
+- StorageVolume objects now have a key called snapshot_id in their extra
+  dicts containing the snapshot ID the volume was based on.
+  (GITHUB-479)
+  [Allard Hoeve]
+
 - VolumeSnapshots now have a `created` attribute that is a `datetime`
   field showing the creation datetime of the snapshot. The field in
   VolumeSnapshot.extra containing the original string is maintained, so
@@ -25,7 +30,6 @@ Compute
   create_storage_volume and destroy_storage_volume. Updated base driver
   method create_storage_volume argument name to be optional.
   (GITHUB-478)
-  [Allard Hoeve]
 
 - Add support for creating volumes based on snapshots to EC2 and OS drivers.
   Also modify signature of base NodeDriver.create_volume to reflect the fact
