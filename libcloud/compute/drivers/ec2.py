@@ -2103,7 +2103,7 @@ class BaseEC2NodeDriver(NodeDriver):
         return sizes
 
     def list_images(self, location=None, ex_image_ids=None, ex_owner=None,
-                    ex_executableby=None):
+                    ex_executableby=None, ex_filters=None):
         """
         List all images
         @inherits: :class:`NodeDriver.list_images`
@@ -2125,6 +2125,10 @@ class BaseEC2NodeDriver(NodeDriver):
         images with public launch permissions.
         Valid values: all|self|aws id
 
+        Ex_filters parameter is used to filter the list of
+        images that should be returned. Only images matchind
+        the filter will be returned.
+
         :param      ex_image_ids: List of ``NodeImage.id``
         :type       ex_image_ids: ``list`` of ``str``
 
@@ -2133,6 +2137,9 @@ class BaseEC2NodeDriver(NodeDriver):
 
         :param      ex_executableby: Executable by
         :type       ex_executableby: ``str``
+
+        :param      ex_filters: Filter by
+        :type       ex_filters: ``dict``
 
         :rtype: ``list`` of :class:`NodeImage`
         """
@@ -2148,6 +2155,9 @@ class BaseEC2NodeDriver(NodeDriver):
             for index, image_id in enumerate(ex_image_ids):
                 index += 1
                 params.update({'ImageId.%s' % (index): image_id})
+
+        if ex_filters:
+            params.update(self._build_filters(ex_filters))
 
         images = self._to_images(
             self.connection.request(self.path, params=params).object

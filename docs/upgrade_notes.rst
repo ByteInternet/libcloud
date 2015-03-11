@@ -8,11 +8,6 @@ preserve the old behavior when this is possible.
 Development
 -----------
 
-* VolumeSnapshots now have a `created` attribute that is a `datetime`
-  field showing the creation datetime of the snapshot. The field in
-  VolumeSnapshot.extra containing the original string is maintained, so
-  this is a backwards-compatible change.
-
 * The base signature of NodeDriver.create_volume has changed. The snapshot
   argument is now expected to be a VolumeSnapshot instead of a string.
   The older signature was never correct for built-in drivers, but custom
@@ -29,6 +24,11 @@ Development
   create_volume_snapshot to be optional. All official implementations of this
   methods already considered it optional. You should update any custom
   drivers if they rely on the name being mandatory.
+
+* VolumeSnapshots now have a `created` attribute that is a `datetime`
+  field showing the creation datetime of the snapshot. The field in
+  VolumeSnapshot.extra containing the original string is maintained, so
+  this is a backwards-compatible change.
 
 Libcloud 0.16.0
 ---------------
