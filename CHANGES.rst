@@ -7,6 +7,10 @@ Changes in current version of Apache Libcloud
 Compute
 ~~~~~~~
 
+- [google compute] Add "WINDOWS" guestOsFeatures option.
+  (GITHUB-861)
+  [Max Illfelder]
+
 - When creating volumes on OpenStack with defaults for `location` or `volume_type`,
   newer OpenStack versions would throw errors. The OpenStack driver will now only
   post those arguments if non-`NoneType`.
@@ -24,6 +28,7 @@ Compute
   optional when working with newer OpenStack versions. The OpenStack driver will now
   only post thost arguments if they are non-`NoneType`.
   (GITHUB-866)
+  [Allard Hoeve]
 
 - StorageVolumeSnapshot now has an attribute `name` that has the name of the snapshot
   if the provider supports it. This used to be `.extra['name']`, but that is inconsistent
