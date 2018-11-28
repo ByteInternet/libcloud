@@ -31,6 +31,7 @@ from libcloud.utils.py3 import httplib
 from libcloud.utils.py3 import b
 from libcloud.utils.py3 import next
 from libcloud.utils.py3 import urlparse
+from libcloud.utils.py3 import parse_qs
 
 
 from libcloud.common.openstack import OpenStackBaseConnection
@@ -69,6 +70,8 @@ __all__ = [
 ATOM_NAMESPACE = "http://www.w3.org/2005/Atom"
 
 DEFAULT_API_VERSION = '1.1'
+
+PAGINATION_LIMIT = 1000
 
 
 class OpenStackComputeConnection(OpenStackBaseConnection):
@@ -168,6 +171,57 @@ class OpenStackNodeDriver(NodeDriver, OpenStackDriverMixin):
     def __init__(self, *args, **kwargs):
         OpenStackDriverMixin.__init__(self, **kwargs)
         super(OpenStackNodeDriver, self).__init__(*args, **kwargs)
+
+    @staticmethod
+    def _paginated_request(url, obj, connection, params=None):
+        """
+        Perform multiple calls in order to have a full list of elements when
+        the API responses are paginated.
+
+        :param url: API endpoint
+        :type url: ``str``
+
+        :param obj: Result object key
+        :type obj: ``str``
+
+        :param connection: The API connection to use to perform the request
+        :type connection: ``obj``
+
+        :param params: Any request parameters
+        :type params: ``dict``
+
+        :return: ``list`` of API response objects
+        :rtype: ``list``
+        """
+        params = params or {}
+        objects = list()
+        loop_count = 0
+        while True:
+            data = connection.request(url, params=params)
+            values = data.object.get(obj, list())
+            objects.extend(values)
+            links = data.object.get('%s_links' % obj, list())
+            next_links = [n for n in links if n['rel'] == 'next']
+            if next_links:
+                next_link = next_links[0]
+                query = urlparse.urlparse(next_link['href'])
+                # The query[4] references the query parameters from the url
+                params.update(parse_qs(query[4]))
+            else:
+                break
+
+            # Prevent the pagination from looping indefinitely in case
+            # the API returns a loop for some reason.
+            loop_count += 1
+            if loop_count > PAGINATION_LIMIT:
+                raise OpenStackException(
+                    'Pagination limit reached for %s, the limit is %d. '
+                    'This might indicate that your API is returning a '
+                    'looping next target for pagination!' % (
+                        url, PAGINATION_LIMIT
+                    ), None
+                )
+        return {obj: objects}
 
     def destroy_node(self, node):
         uri = '/servers/%s' % (node.id)
@@ -2951,10 +3005,9 @@ class OpenStack_2_NodeDriver(OpenStack_1_1_NodeDriver):
 
         :rtype: ``list`` of :class:`OpenStack_2_PortInterface`
         """
-        response = self.network_connection.request(
-            '/v2.0/ports'
-        )
-        return [self._to_port(port) for port in response.object['ports']]
+        response = self._paginated_request(
+            '/v2.0/ports', 'ports', self.network_connection)
+        return [self._to_port(port) for port in response['ports']]
 
     def ex_delete_port(self, port):
         """
@@ -3060,8 +3113,8 @@ class OpenStack_2_NodeDriver(OpenStack_1_1_NodeDriver):
         return self._to_port(response.object['port'])
 
     def list_volumes(self):
-        return self._to_volumes(
-            self.volumev2_connection.request('/volumes/detail').object)
+        return self._to_volumes(self._paginated_request(
+            '/volumes/detail', 'volumes', self.volumev2_connection))
 
     def ex_get_volume(self, volumeId):
         return self._to_volume(
@@ -3122,8 +3175,8 @@ class OpenStack_2_NodeDriver(OpenStack_1_1_NodeDriver):
                                                 method='DELETE').success()
 
     def ex_list_snapshots(self):
-        return self._to_snapshots(
-            self.volumev2_connection.request('/snapshots/detail').object)
+        return self._to_snapshots(self._paginated_request(
+            '/snapshots/detail', 'snapshots', self.volumev2_connection))
 
     def create_volume_snapshot(self, volume, name=None, ex_description=None,
                                ex_force=True):
