@@ -4,6 +4,36 @@
 Changes in Apache Libcloud in development
 -----------------------------------------
 
+- Add loadbalancer and compute drivers for NTT-CIS, rename dimensiondata modules to NTT-CIS (GITHUB-1250)
+  [Mitch Raful]
+
+Common
+~~~~~~
+
+- [OpenStack] Handle missing user enabled attribute (GITHUB-1261)
+  [Ken Dreyer]
+
+Compute
+~~~~~~~
+
+- [OpenStack] Implement OpenStack_1_1_NodeDriver ex_get_snapshot (GITHUB-1257)
+  [Rick van de Loo]
+
+- [UpCloud] Update documentation for UpCloud driver (LIBCLOUD-1026, GITHUB-1259)
+  [Ilari Mäkelä]
+
+Container
+~~~~~~~~~
+
+- [Docker] Improve docstring for RegistryClient (GITHUB-1254)
+  [Ken Dreyer]
+
+Changes in Apache Libcloud 2.4.0
+--------------------------------
+
+- Refuse installation with Python 2.6 and Python 3.3 (support was
+  already dropped in Libcloud 2.3.0)
+
 - Support Python 3.7 (GITHUB-1227, GITHUB-1236)
   [Andreas Hasenack, Andrew Starr-Bochicchio, Quentin Pradet]
 
@@ -18,6 +48,9 @@ Common
 ~~~~~~
 
 - [OpenStack] Document openstack_connection_kwargs method (GITHUB-1219)
+  [Ken Dreyer]
+
+- [OpenStack] Handle missing user email in OpenStackIdentityUser (GITHUB-1249)
   [Ken Dreyer]
 
 Compute
@@ -49,6 +82,12 @@ Compute
 
 - [EC2] Added script to automatically get EC2 instance sizes (GITHUB-1211)
   [Anthony Monthe, Quentin Pradet]
+
+- [EC2] Update instance sizes (GITHUB-1238)
+  [Ward Vandewege]
+
+- [EC2] Accept tags when create a snapshot (LIBCLOUD-1014, GITHUB-1240)
+  [Rafael Gonçalves]
 
 - [GCE] Expand Firewall options coverage (LIBCLOUD-960, GITHUB-1144)
   [maxlip]
@@ -102,8 +141,20 @@ Compute
 - [OpenStack] Add get_user method (GITHUB-1216)
   [Ken Dreyer]
 
+- [OpenStack] Add ex_list_subnets to OpenStack_2_NodeDriver (GITHUB-1215, LIBCLOUD-604)
+  [Miguel Caballer]
+
+- [OpenStack] The OpenStack_2_NodeDriver uses two connections (GITHUB-1215, LIBCLOUD-997)
+  [Miguel Caballer]
+
+- [OpenStack] The OpenStack_2_NodeDriver /v2.0/networks instead of /os-networks (GITHUB-1215, LIBCLOUD-998)
+  [Miguel Caballer]
+
 - [Scaleway] New Scaleway driver (GITHUB-1121, GITHUB-1220)
   [Daniel Hunsaker, Nándor István Krácser, Rémy Léone]
+
+- [Scaleway] Update Scaleway default API host (GITHUB-1239)
+  [Rémy Léone]
 
 DNS
 ~~~
@@ -131,6 +182,9 @@ Storage
 
 - [S3] Guess s3 upload content type (LIBCLOUD-958, GITHUB-1195)
   [Iuri de Silvio]
+
+- [S3] Add Amazon S3 (cn-northwest-1) Storage Driver (GITHUB-1241)
+  [@yangkang55]
 
 Other
 ~~~~~
