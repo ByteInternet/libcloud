@@ -2753,6 +2753,21 @@ class OpenStack_2_NodeDriver(OpenStack_1_1_NodeDriver):
             )
         )
 
+    def list_nodes(self, ex_all_tenants=False):
+        """
+        List the nodes in a tenant
+
+        :param ex_all_tenants: List nodes for all the tenants. Note: Your user
+                               must have admin privileges for this
+                               functionality to work.
+        :type ex_all_tenants: ``bool``
+        """
+        params = {}
+        if ex_all_tenants:
+            params = {'all_tenants': 1}
+        return self._to_nodes(self._paginated_request(
+            '/servers/detail', 'servers', self.connection, params=params))
+
     def get_image(self, image_id):
         """
         Get a NodeImage using the V2 Glance API
