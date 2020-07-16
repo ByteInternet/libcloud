@@ -7,6 +7,12 @@ Changes in Apache Libcloud in development
 Compute
 ~~~~~~~
 
+- [OpenStack] Add `ex_get_network()` to the OpenStack driver to make it
+  possible to retrieve a single network by using the ID.
+
+  (GITHUB-1474)
+  [Sander Roosingh - @SanderRoosingh]
+
 - [Packet] Update ``list_sizes`` method so it accepts ``ex_project_id`` argument
   and works with project API tokens. (GITHUB-1351) [Dimitris Moraitis - @d-mo]
 
