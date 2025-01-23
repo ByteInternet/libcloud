@@ -1188,6 +1188,21 @@ class OpenStack_1_1_Tests(unittest.TestCase, TestCaseMixin):
         self.assertEqual(node.extra["metadata"]["My Server Name"], "Apache1")
         self.assertEqual(node.extra["key_name"], "devstack")
 
+    def test_create_node_with_ex_network_config(self):
+        image = NodeImage(id=11, name="Ubuntu 8.10 (intrepid)", driver=self.driver)
+        size = NodeSize(1, "256 slice", None, None, None, None, driver=self.driver)
+        network_config = [
+            {"port": "123c8a8c-6427-4e8f-a805-2035365f4d43"}
+
+        ]
+        node = self.driver.create_node(
+            name="racktest", image=image, size=size, ex_network_config=network_config
+        )
+        self.assertEqual(node.id, "26f7fbee-8ce1-4c28-887a-bfe8e4bb10fe")
+        self.assertEqual(node.name, "racktest")
+        self.assertEqual(node.extra["password"], "racktestvJq7d3")
+        self.assertEqual(node.extra["metadata"]["My Server Name"], "Apache1")
+
     def test_create_node_with_availability_zone(self):
         image = NodeImage(id=11, name="Ubuntu 8.10 (intrepid)", driver=self.driver)
         size = NodeSize(1, "256 slice", None, None, None, None, driver=self.driver)
